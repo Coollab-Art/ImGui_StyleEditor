@@ -123,7 +123,7 @@ config.register_element({
     [](ImVec4 const& color) {
         ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = color;
     },
-    "",
+    "Title bar",
 });
 
 config.register_element({
@@ -134,7 +134,7 @@ config.register_element({
     [](ImVec4 const& color) {
         ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive] = color;
     },
-    "",
+    "Title bar when focused",
 });
 
 config.register_element({
@@ -145,7 +145,7 @@ config.register_element({
     [](ImVec4 const& color) {
         ImGui::GetStyle().Colors[ImGuiCol_TitleBgCollapsed] = color;
     },
-    "",
+    "Title bar when collapsed",
 });
 
 config.register_element({
@@ -211,7 +211,7 @@ config.register_element({
     [](ImVec4 const& color) {
         ImGui::GetStyle().Colors[ImGuiCol_CheckMark] = color;
     },
-    "",
+    "Checkbox tick and RadioButton circle",
 });
 
 config.register_element({
@@ -369,14 +369,14 @@ config.register_element({
 });
 
 config.register_element({
-    "Tab",
+    "InputTextCursor",
     []() {
-        return ImGui::GetStyle().Colors[ImGuiCol_Tab];
+        return ImGui::GetStyle().Colors[ImGuiCol_InputTextCursor];
     },
     [](ImVec4 const& color) {
-        ImGui::GetStyle().Colors[ImGuiCol_Tab] = color;
+        ImGui::GetStyle().Colors[ImGuiCol_InputTextCursor] = color;
     },
-    "TabItem in a TabBar",
+    "InputText cursor/caret",
 });
 
 config.register_element({
@@ -387,40 +387,73 @@ config.register_element({
     [](ImVec4 const& color) {
         ImGui::GetStyle().Colors[ImGuiCol_TabHovered] = color;
     },
-    "",
+    "Tab background, when hovered",
 });
 
 config.register_element({
-    "TabActive",
+    "Tab",
     []() {
-        return ImGui::GetStyle().Colors[ImGuiCol_TabActive];
+        return ImGui::GetStyle().Colors[ImGuiCol_Tab];
     },
     [](ImVec4 const& color) {
-        ImGui::GetStyle().Colors[ImGuiCol_TabActive] = color;
+        ImGui::GetStyle().Colors[ImGuiCol_Tab] = color;
     },
-    "",
+    "Tab background, when tab-bar is focused & tab is unselected",
 });
 
 config.register_element({
-    "TabUnfocused",
+    "TabSelected",
     []() {
-        return ImGui::GetStyle().Colors[ImGuiCol_TabUnfocused];
+        return ImGui::GetStyle().Colors[ImGuiCol_TabSelected];
     },
     [](ImVec4 const& color) {
-        ImGui::GetStyle().Colors[ImGuiCol_TabUnfocused] = color;
+        ImGui::GetStyle().Colors[ImGuiCol_TabSelected] = color;
     },
-    "",
+    "Tab background, when tab-bar is focused & tab is selected",
 });
 
 config.register_element({
-    "TabUnfocusedActive",
+    "TabSelectedOverline",
     []() {
-        return ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive];
+        return ImGui::GetStyle().Colors[ImGuiCol_TabSelectedOverline];
     },
     [](ImVec4 const& color) {
-        ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = color;
+        ImGui::GetStyle().Colors[ImGuiCol_TabSelectedOverline] = color;
     },
-    "",
+    "Tab horizontal overline, when tab-bar is focused & tab is selected",
+});
+
+config.register_element({
+    "TabDimmed",
+    []() {
+        return ImGui::GetStyle().Colors[ImGuiCol_TabDimmed];
+    },
+    [](ImVec4 const& color) {
+        ImGui::GetStyle().Colors[ImGuiCol_TabDimmed] = color;
+    },
+    "Tab background, when tab-bar is unfocused & tab is unselected",
+});
+
+config.register_element({
+    "TabDimmedSelected",
+    []() {
+        return ImGui::GetStyle().Colors[ImGuiCol_TabDimmedSelected];
+    },
+    [](ImVec4 const& color) {
+        ImGui::GetStyle().Colors[ImGuiCol_TabDimmedSelected] = color;
+    },
+    "Tab background, when tab-bar is unfocused & tab is selected",
+});
+
+config.register_element({
+    "TabDimmedSelectedOverline",
+    []() {
+        return ImGui::GetStyle().Colors[ImGuiCol_TabDimmedSelectedOverline];
+    },
+    [](ImVec4 const& color) {
+        ImGui::GetStyle().Colors[ImGuiCol_TabDimmedSelectedOverline] = color;
+    },
+    "..horizontal overline, when tab-bar is unfocused & tab is selected",
 });
 
 config.register_element({
@@ -545,6 +578,17 @@ config.register_element({
 });
 
 config.register_element({
+    "TextLink",
+    []() {
+        return ImGui::GetStyle().Colors[ImGuiCol_TextLink];
+    },
+    [](ImVec4 const& color) {
+        ImGui::GetStyle().Colors[ImGuiCol_TextLink] = color;
+    },
+    "Hyperlink color",
+});
+
+config.register_element({
     "TextSelectedBg",
     []() {
         return ImGui::GetStyle().Colors[ImGuiCol_TextSelectedBg];
@@ -552,7 +596,18 @@ config.register_element({
     [](ImVec4 const& color) {
         ImGui::GetStyle().Colors[ImGuiCol_TextSelectedBg] = color;
     },
-    "",
+    "Selected text inside an InputText",
+});
+
+config.register_element({
+    "TreeLines",
+    []() {
+        return ImGui::GetStyle().Colors[ImGuiCol_TreeLines];
+    },
+    [](ImVec4 const& color) {
+        ImGui::GetStyle().Colors[ImGuiCol_TreeLines] = color;
+    },
+    "Tree node hierarchy outlines when using ImGuiTreeNodeFlags_DrawLines",
 });
 
 config.register_element({
@@ -567,14 +622,14 @@ config.register_element({
 });
 
 config.register_element({
-    "NavHighlight",
+    "NavCursor",
     []() {
-        return ImGui::GetStyle().Colors[ImGuiCol_NavHighlight];
+        return ImGui::GetStyle().Colors[ImGuiCol_NavCursor];
     },
     [](ImVec4 const& color) {
-        ImGui::GetStyle().Colors[ImGuiCol_NavHighlight] = color;
+        ImGui::GetStyle().Colors[ImGuiCol_NavCursor] = color;
     },
-    "Gamepad/keyboard: current highlighted item",
+    "Color of keyboard/gamepad navigation cursor/rectangle, when visible",
 });
 
 config.register_element({

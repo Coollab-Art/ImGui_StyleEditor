@@ -89,7 +89,6 @@ static void imgui_color_element(GroupedElement& element)
             reinterpret_cast<float*>(&color), // NOLINT(*reinterpret-cast)
             ImGuiColorEditFlags_None
                 | ImGuiColorEditFlags_NoInputs
-                | ImGuiColorEditFlags_AlphaPreview
                 | ImGuiColorEditFlags_NoDragDrop
         ))
     {

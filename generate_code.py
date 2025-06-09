@@ -33,7 +33,7 @@ def parse_color_elements() -> List[ColorElement]:
 
     def parse_one_line(line: str):
         return ColorElement(
-            id=line.split()[0].strip().removesuffix(','),
+            id=line.split(",")[0].strip(),
             comment=find_comment(line),
         )
 
