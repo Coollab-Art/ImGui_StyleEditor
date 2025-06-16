@@ -7,3 +7,9 @@
 [submodule "lib/json"]
 	path = lib/json
 	url = https://github.com/nlohmann/json
+[submodule "lib/Boxer"]
+	path = lib/Boxer
+	url = https://github.com/Coollab-Art/Boxer
+[submodule "lib/glm"]
+	path = lib/glm
+	url = https://github.com/Coollab-Art/glm

@@ -8,6 +8,7 @@
 #include "GroupID.hpp"
 #include "ISerializer.hpp"
 #include "JsonSerializer.hpp"
+#include "boxer/boxer.h"
 #include "color_conversions.hpp"
 #include "imgui/imgui.h"
 #include "imgui/misc/cpp/imgui_stdlib.h"
@@ -356,6 +357,14 @@ auto Editor::try_get_theme(std::string_view theme_name) -> Theme*
     return &it->theme;
 }
 
+auto Editor::theme_name_already_used(std::string_view theme_name) const -> bool
+{
+    auto const it = std::find_if(_themes.begin(), _themes.end(), [&](ThemeAndSerializer const& theme) {
+        return theme.theme.name == theme_name;
+    });
+    return it != _themes.end();
+}
+
 auto Editor::get_color_from_theme_or_default(std::string_view theme_name, std::string_view color_category) const -> Color
 {
     auto const* theme = try_get_theme(theme_name);
@@ -615,20 +624,71 @@ static auto file_name_error(std::string const& name) -> std::string
     return "";
 }
 
-auto Editor::imgui_themes_editor() -> bool
+auto Editor::imgui_themes_editor(ImVec4 const& warning_color) -> bool
 {
     bool b = false;
+
+    ImGui::TextWrapped("%s", R"TXT(- While you edit a theme the changes will be saved to a "Temporary" theme. Once you are done creating your theme, please make sure to save it and give it a proper name to avoid overwriting it the next time you create a theme.
+- You can also name it "Dark" or "Light" to override the default dark and light themes (the ones used when choosing "Use OS color theme")
+- In the themes dropdown you can right-click a theme to delete it
+- It is important to check / uncheck "Is Dark Mode", this helps us know how to adapt the colors properly)TXT");
+    ImGui::NewLine();
 
     // Theme selector
     b |= imgui_theme_selector(true /*is_allowed_to_delete_themes*/);
 
-    // Edit current theme
     auto tmp_theme = Theme{};
     if (auto const* current_theme = try_get_theme(_current_theme.name()))
         tmp_theme = *current_theme;
     else if (auto const* default_theme = get_default_theme())
         tmp_theme = *default_theme;
 
+    auto const warning_unsaved_theme = [&]() {
+        if (tmp_theme.name == "Temporary")
+            ImGui::TextColored(warning_color, "%s", "Please don't forget to save your theme once you are done editing it!");
+    };
+
+    warning_unsaved_theme();
+    { // Save current theme
+        std::string const err = file_name_error(_next_theme_name);
+        ImGui::BeginGroup();
+        ImGui::BeginDisabled(!err.empty());
+        auto const do_save = [&]() {
+            if (theme_name_already_used(_next_theme_name))
+            {
+                if (boxer::show(
+                        ("There is already a theme called \"" + _next_theme_name + "\"\nAre you sure you want to overwrite it?").c_str(),
+                        "Overwriting existing theme", boxer::Style::Warning, boxer::Buttons::OKCancel
+                    )
+                    != boxer::Selection::OK)
+                {
+                    return;
+                }
+            }
+            tmp_theme.name = _next_theme_name;
+            save_theme_and_add_it_to_the_list_of_themes(tmp_theme);
+            _next_theme_name = "";
+            delete_theme("Temporary");
+        };
+        if (ImGui::Button("Save theme"))
+            do_save();
+        ImGui::EndDisabled();
+        ImGui::EndGroup();
+        if (!err.empty())
+            ImGui::SetItemTooltip("%s", err.c_str());
+        ImGui::SameLine();
+        ImGui::TextUnformatted("as");
+        ImGui::SameLine();
+        if (ImGui::InputText("##_next_theme_name", &_next_theme_name, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            if (err.empty())
+                do_save();
+        }
+    }
+    warning_unsaved_theme();
+    ImGui::NewLine();
+
+    // Edit current theme
     if (tmp_theme.imgui([&](std::function<void(std::string const&)> const& callback) {
             for (auto const& category : _config.categories())
                 callback(category.name);
@@ -640,31 +700,6 @@ auto Editor::imgui_themes_editor() -> bool
         save_current_theme();
         save_theme_and_add_it_to_the_list_of_themes(tmp_theme);
         b = true;
-    }
-
-    // Save current theme
-    std::string const err = file_name_error(_next_theme_name);
-    ImGui::BeginGroup();
-    ImGui::BeginDisabled(!err.empty());
-    auto const do_save = [&]() {
-        tmp_theme.name = _next_theme_name;
-        save_theme_and_add_it_to_the_list_of_themes(tmp_theme);
-        _next_theme_name = "";
-        delete_theme("Temporary");
-    };
-    if (ImGui::Button("Save theme"))
-        do_save();
-    ImGui::EndDisabled();
-    ImGui::EndGroup();
-    if (!err.empty())
-        ImGui::SetItemTooltip("%s", err.c_str());
-    ImGui::SameLine();
-    ImGui::TextUnformatted("as");
-    ImGui::SameLine();
-    if (ImGui::InputText("##_next_theme_name", &_next_theme_name, ImGuiInputTextFlags_EnterReturnsTrue))
-    {
-        if (err.empty())
-            do_save();
     }
 
     return b;

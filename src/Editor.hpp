@@ -58,7 +58,7 @@ public:
     auto get_color(std::string_view color_category) const -> Color;
 
     auto imgui_config_editor() -> bool;
-    auto imgui_themes_editor() -> bool;
+    auto imgui_themes_editor(ImVec4 const& warning_color = ImVec4{0.830f, 0.580f, 0.090f, 1.000f}) -> bool;
     auto imgui_theme_selector(bool is_allowed_to_delete_themes = false) -> bool;
 
 private:
@@ -77,6 +77,7 @@ private:
     auto find_closest_theme(Theme const& target_theme) const -> Theme const*;
     auto theme_file_path(std::string const& theme_name) const -> std::filesystem::path;
     auto get_default_theme() const -> Theme const*;
+    auto theme_name_already_used(std::string_view theme_name) const -> bool;
 
     void save_config() const;
     void save_theme(ThemeAndSerializer const&) const;

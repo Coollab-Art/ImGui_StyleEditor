@@ -33,14 +33,8 @@ if(WARNINGS_AS_ERRORS_FOR_IMSTYLEED)
 endif()
 
 # ---glm library---
-include(FetchContent)
-FetchContent_Declare(
-    glm
-    GIT_REPOSITORY https://github.com/Coollab-Art/glm
-    GIT_TAG 41628991f848835d36042173eb45874c1859e1c2
-)
-FetchContent_Populate(glm)
-target_include_directories(ImStyleEd SYSTEM PRIVATE ${glm_SOURCE_DIR})
+target_include_directories(ImStyleEd SYSTEM PRIVATE "lib/glm")
+install(FILES "lib/glm/copying.txt" DESTINATION "license/glm")
 
 # ---wants_dark_theme library---
 add_subdirectory(lib/wants_dark_theme)
@@ -48,3 +42,9 @@ target_link_libraries(ImStyleEd PRIVATE wants_dark_theme::wants_dark_theme)
 
 # ---nlohmann json library---
 target_include_directories(ImStyleEd SYSTEM PRIVATE lib/json/single_include)
+install(FILES "lib/json/LICENSE.MIT" DESTINATION "license/nlohmann_json")
+
+# ---Boxer library---
+add_subdirectory(lib/Boxer)
+target_link_libraries(ImStyleEd PRIVATE Boxer)
+install(FILES "lib/Boxer/LICENSE" DESTINATION "license/Boxer")
