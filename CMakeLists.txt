@@ -45,6 +45,6 @@ target_include_directories(ImStyleEd SYSTEM PRIVATE lib/json/single_include)
 install(FILES "lib/json/LICENSE.MIT" DESTINATION "license/nlohmann_json")
 
 # ---Boxer library---
-add_subdirectory(lib/Boxer)
+# add_subdirectory(lib/Boxer) # Removed because it conflicts with Cool's version of the library
 target_link_libraries(ImStyleEd PRIVATE Boxer)
 install(FILES "lib/Boxer/LICENSE" DESTINATION "license/Boxer")
